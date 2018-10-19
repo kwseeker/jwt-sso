@@ -18,15 +18,17 @@ public class TokenStateFilter  implements Filter {
     @Override
     public void doFilter(ServletRequest argo, ServletResponse arg1,
                          FilterChain chain ) throws IOException, ServletException {
+
         HttpServletRequest request=(HttpServletRequest) argo;
         HttpServletResponse response=(HttpServletResponse) arg1;
-        if(request.getRequestURI().endsWith("/login")){
-            //登陆接口不校验token，直接放行
+        if(request.getRequestURI().endsWith("/login") || request.getRequestURI().endsWith("/register")){
+            //登陆接口和注册接口不校验token，直接放行
             chain.doFilter(request, response);
             return;
         }
+
         //其他API接口一律校验token
-        System.out.println("开始校验token");
+        System.out.println("开始校验token， RequestURI:" + request.getRequestURI());
         //从请求头中获取token
         String token=request.getHeader("token");
         Map<String, Object> resultMap=Jwt.validToken(token);

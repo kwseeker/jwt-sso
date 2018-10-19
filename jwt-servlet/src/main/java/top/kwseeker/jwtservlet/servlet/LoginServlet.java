@@ -1,7 +1,10 @@
 package top.kwseeker.jwtservlet.servlet;
 
 import net.minidev.json.JSONObject;
+import org.apache.ibatis.session.SqlSession;
+import top.kwseeker.jwtservlet.dao.UserMapper;
 import top.kwseeker.jwtservlet.jwt.Jwt;
+import top.kwseeker.jwtservlet.util.MybatisUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,7 +34,11 @@ public class LoginServlet extends HttpServlet {
         JSONObject resultJSON=new JSONObject();
 
         //用户名密码校验成功后，生成token返回客户端
-        if("admin".equals(userName)&&"123".equals(password)){
+        SqlSession sqlSession = MybatisUtil.getSqlSession("mybatis-config.xml");
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+//        if("admin".equals(userName)&&"123".equals(password)){
+        if(userMapper.countUserByName(userName) > 0 &&
+                !password.equals(userMapper.selectUserByName(userName).getPassword())){
             //生成token
             Map<String , Object> payload=new HashMap<String, Object>();
             Date date=new Date();
