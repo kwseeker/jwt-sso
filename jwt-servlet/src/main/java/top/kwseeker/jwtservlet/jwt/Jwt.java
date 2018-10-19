@@ -16,13 +16,14 @@ public class Jwt {
     private static final byte[] SECRET="3d990d2276917dfac04467df11fff26d".getBytes();
 
     /**
+     * JSON Web Signature (JWS) header.
      * 初始化head部分的数据为
      * {
      * 		"alg":"HS256",
      * 		"type":"JWT"
      * }
      */
-    private static final JWSHeader header=new JWSHeader(JWSAlgorithm.HS256, JOSEObjectType.JWT,
+    private static final JWSHeader header = new JWSHeader(JWSAlgorithm.HS256, JOSEObjectType.JWT,
             null, null, null, null, null, null, null, null, null, null, null);
 
     /**
@@ -47,7 +48,7 @@ public class Jwt {
     }
 
     /**
-     * 校验token是否合法，返回Map集合,集合中主要包含    state状态码   data鉴权成功后从token中提取的数据
+     * 校验token是否合法，返回Map集合,集合中主要包含 state状态码 data鉴权成功后从token中提取的数据
      * 该方法在过滤器中调用，每次请求API时都校验
      * @param token
      * @return  Map<String, Object>

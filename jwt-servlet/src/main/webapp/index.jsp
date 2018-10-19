@@ -5,6 +5,9 @@
 %>
 
 <!DOCTYPE html>
+<%--
+    这个界面是测试生成token,以及解析token内容的
+--%>
 <html>
 <head>
     <meta charset="UTF-8">

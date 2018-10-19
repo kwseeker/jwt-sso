@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<!--
+    登录页面
+
+    输入用户名、密码，通过Post请求 /jwt-servlet/servlet/login 向后端发送用户名和密码的Json格式数据；
+    返回成功的话，将JWT Token存在本地存储，并跳转到登录成功的主页面main.html
+-->
 <html>
 <head>
     <meta charset="UTF-8">
@@ -39,7 +45,7 @@
             var password=$.trim($('#password').val());
             $.ajax({
                 type:"post",
-                url:"/jwt-servlet/servlet/login",       //请求路径
+                url:"/jwt-servlet/servlet/login",       //登录请求路径
                 data:{
                     userName:userName,
                     password:password

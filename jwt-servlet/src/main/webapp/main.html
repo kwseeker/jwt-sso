@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+<!--
+    登录成功后的主页面
+
+    getdata按钮：
+    通过请求头加了token的 Get请求 /jwt-servlet/servlet/getInfo 从后台获取主页数据；
+    成功返回后，将response的数据显示到<body></body>。
+
+    loginout按钮：
+    删除浏览器本地存储的token, 并跳转回登录界面login.html。
+-->
 <html>
 <head>
     <meta charset="utf-8" />
