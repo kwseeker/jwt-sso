@@ -1,2 +1,4 @@
 .idea/
-jwt-servlet/target
+*/target
+*/*.iml
+*/.mvn/
