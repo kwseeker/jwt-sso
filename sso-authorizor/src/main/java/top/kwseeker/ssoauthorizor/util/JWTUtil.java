@@ -3,7 +3,7 @@ package top.kwseeker.ssoauthorizor.util;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
-import net.minidev.json.JSONObject;
+import com.nimbusds.jose.shaded.json.JSONObject;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,12 +38,12 @@ public class JWTUtil {
             JWSVerifier verifier = new MACVerifier(SECRET); //签名校对
 
             if (jwsObject.verify(verifier)) {
-                JSONObject jsonOBj = payload.toJSONObject();    //负载内容
+                Map<String, Object> jsonOBj = payload.toJSONObject();    //负载内容
                 // token校验成功（此时没有校验是否过期）
                 resultMap.put("state", TokenState.VALID.toString());
                 // 若payload包含ext字段，则校验是否过期
                 if (jsonOBj.containsKey("ext")) {
-                    long extTime = Long.valueOf(jsonOBj.get("ext").toString());
+                    long extTime = Long.parseLong(jsonOBj.get("ext").toString());
                     long curTime = new Date().getTime();
                     // 过期了
                     if (curTime > extTime) {

@@ -27,7 +27,7 @@ git checkout -b f-learn 9.15.2
 
 参考源码 `SignedJWTTest$testSignAndVerify`方法。
 
-此方法执行流程：
+**方法执行流程**：
 
 1. 使用Java标准库的`KeyPairGenerator`生成公私钥对；项目中不用每次都生成，只生成一次就行；
 
@@ -88,17 +88,46 @@ git checkout -b f-learn 9.15.2
 
 + **加密算法**
 
-  + **非对称加密**
+  + **消息认证码**
 
-    + **RSA** (使用最广泛,三个人的名字首字母)
+    + **[HMAC](https://zh.wikipedia.org/wiki/HMAC)**
+
+      类似MD5摘要算法，
+
+      常用实现：**HS256**(HMAC-SHA256)
+
+  + **非对称加密**（公开密钥加密）
+
+    + **[RSA](https://zh.wikipedia.org/wiki/RSA加密演算法)** (使用最广泛,三个人的名字首字母)
 
       利用极大整数难以因数分解的原理。
 
-  + **对称加密**
+      NIST建议的RSA[密钥长度](https://zh.wikipedia.org/wiki/密钥长度)为至少2048位。
 
-    + **HS256**
+      常用实现：**RS256** (RSA-SHA256)
 
-      
+    + **[ECDSA](https://zh.wikipedia.org/wiki/ECDSA)**
+
+      常用实现：**ES256**(ECDSA-SHA256)
+
+    + [ElGamal](https://zh.wikipedia.org/wiki/ElGamal) 
+
+    + Rabin
+
+    + [DSA](https://zh.wikipedia.org/wiki/数字签名算法) 
+
+  + **对称加密**（对称密钥加密）
+
+     + **[AES](https://zh.wikipedia.org/wiki/高级加密标准)**
+     + [ChaCha20](https://zh.wikipedia.org/wiki/Salsa20)
+     + **[3DES](https://zh.wikipedia.org/wiki/3DES)**
+     + [Salsa20](https://zh.wikipedia.org/wiki/Salsa20)
+     + **[DES](https://zh.wikipedia.org/wiki/資料加密標準)**
+     + [Blowfish](https://zh.wikipedia.org/wiki/Blowfish)
+     + [IDEA](https://zh.wikipedia.org/wiki/國際資料加密演算法)
+     + [RC5](https://zh.wikipedia.org/wiki/RC5)
+     + [RC6](https://zh.wikipedia.org/wiki/RC6)
+     + [Camellia](https://zh.wikipedia.org/wiki/Camellia)
 
 + **JWS & JWE**
 
@@ -123,11 +152,27 @@ git checkout -b f-learn 9.15.2
 
 
 
+## 3 使用场景&优缺点
 
 
-## 3 附录
 
-## 3.1 参考资料
+## 4 定制内容
+
+### 4.1 加密算法选择
+
+参考附录，有人对比了一些常用算法的优缺点。
+
+总结：
+
+如果只是在可信任的服务器上做token生成和校验，只需要使用HS256就行了；如果校验过程发生在第三方服务器或客户端，则需要选择非对称加密，根据是否有签名数据量限制选择RSxxx还是Esxxx。
+
+
+
+## 5 附录
+
+## 5.1 参考资料
+
++ [加密](https://zh.wikipedia.org/wiki/加密)
 
 + 《密码学原理与Java实现》
 
@@ -135,5 +180,5 @@ git checkout -b f-learn 9.15.2
 
 + [RFC7519 (JWT)](https://www.rfc-editor.org/info/rfc7519) [RFC7515 (JWS)](https://www.rfc-editor.org/info/rfc7515) [RFC7516 (JWE)](https://www.rfc-editor.org/info/rfc7516) 
 
-   
++ [JWT的签名算法选择研究](http://www.bewindoweb.com/301.html)
 
