@@ -58,7 +58,7 @@ git checkout -b f-learn 9.15.2
    aud		收件人，有区分大小写的字符串构成的数组， StringOrURI，可选
    exp		失效时间，（可能有时差，可以留几分钟缓和余地）必须是number类型包含NumericDate值，可选
    nbf		生效时间，（可能有时差，可以留几分钟缓和余地）必须是number类型包含NumericDate值，可选
-   iat		 JWT 所颁发的时间，用于计算这个 JWT 已经使用的期限，必须是number类型包含NumericDate值，可选
+   iat		JWT 所颁发的时间，用于计算这个 JWT 已经使用的期限，必须是number类型包含NumericDate值，可选
    jti		JWT 的唯一标识符，用于避免 JWT 被重复发送，大小写敏感，可选
    ```
 
@@ -143,16 +143,82 @@ git checkout -b f-learn 9.15.2
 
   JWE相对于JWS将业务数据等信息也进行了加密，兼顾数据的安全性与完整性。
 
-+ 
+  
+
 
 ## 2 规范主要内容
 
 + `JWT`被编码为`JSON`对象，作为`JWS`的`payload`或`JWE`的`plaintext`
-+ 好
+
++ ...
 
 
 
 ## 3 使用场景&优缺点
+
+### 3.1 使用场景
+
++ **一次性验证**
+
+  如：邮件中的激活链接。
+
++ **HTTP无状态身份认证**
+
+### 3.2 优缺点
+
+**优点**
+
++ **服务端无状态**
+
+  可以节省服务端内存占用（Token信息一般都是存内存数据库的）。也不需要连接数据库。
+
++ **跨服务调用**
+
+**缺点**
+
++ **增加流量消耗、可能降低接口性能**
+
++ **默认对负载信息不隐藏，不适合存敏感信息**
+
+  如果包含敏感信息可以使用`JWE`，或者后端在生成签名前自行对负载信息加密。
+
+**使用注意**
+
++ **JWT token 泄漏怎么办？**
+
+  前端选择`Cookie`存储而不是`LocalStorage`, 相对应的后端服务器设置`HttpOnly`属性；禁止客户端脚本访问Cookie，但是需要客户端浏览器支持。
+
+  关于`HttpOnly`参考附录`Using HTTP cookies`。
+
++ **用户注销或修改密码如何让JWT token立即失效？**
+
+  比较好的实现有两个：
+
+  1）**黑名单**（推荐）
+
+  用户注销或修改密码后，将原来的token加入黑名单。因为注销和修改密码行为还是很少的，空间、性能损失也较很低。
+
+  2）生成签名时不使用统一的密钥，而是使用用户相关的信息生成密钥
+
+  比如使用用户ID、用户状态（是否注销）和用户密码等通过摘要算法等生成密钥。
+
++ **JWT token 难续签问题**
+
+  JWT的特性天然不支持续签，不可能每次请求重新生成token（性能问题）, 也不可能由前端在快过期时刷新token（前端操作时间具有不确定性）, 也不适合在后台存token过期时间（违背JWT设计初衷）。
+
+  解决方案：
+
+  1）**每次前端请求，后台都判断下过期时间是否临近是否需要刷新，需要刷新则生成新的token，放到Response的header中**（推荐）
+
+  ​		前端每次请求后判断下有没有新的token需要存。
+
+  2）前端设置定时任务，过期前重新刷新token, 以旧换新（可行）
+
+  3）借鉴OAuth2的RefreshToken额外颁发一个长期有效的RefreshToken（比如几天）
+
+  ​		只要RefreshToken不过期就可以刷新用户token，不过Refresh Token刷新必须判定用户的合法性，例如 UA、IP 等特征资料。这样的话还不如直接使用OAuth2的无状态身份校验。
+
+  4）直接将token改为长期有效，增加像RefreshToken一样的校验规则，降低token泄漏带来的风险
 
 
 
@@ -182,3 +248,4 @@ git checkout -b f-learn 9.15.2
 
 + [JWT的签名算法选择研究](http://www.bewindoweb.com/301.html)
 
++ [Using HTTP cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)

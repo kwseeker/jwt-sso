@@ -54,10 +54,10 @@ public class SignedJWTTest extends TestCase {
                 .claim("scope", "openid")
                 .build();
 
-        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).
-                keyID("1").
-                jwkURL(new URI("https://c2id.com/jwks.json")).
-                build();
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
+                .keyID("1")
+                .jwkURL(new URI("https://c2id.com/jwks.json"))
+                .build();
         SignedJWT signedJWT = new SignedJWT(header, claimsSet);
         assertEquals(JWSObject.State.UNSIGNED, signedJWT.getState());
 
@@ -81,7 +81,7 @@ public class SignedJWTTest extends TestCase {
         assertEquals(sigInput, Base64URL.encode(parsedSingedJWT.getSigningInput()));
         //客户端校验
         JWSVerifier verifier = new RSASSAVerifier(publicKey);
-        assertTrue(signedJWT.verify(verifier));
+        assertTrue(parsedSingedJWT.verify(verifier));
         assertEquals(JWSObject.State.VERIFIED, signedJWT.getState());
     }
 }
